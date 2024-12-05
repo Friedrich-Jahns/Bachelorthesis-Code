@@ -1,0 +1,75 @@
+import h5py
+import numpy as np
+from skimage.morphology import skeletonize
+from scipy.spatial import distance_matrix
+from pathlib import Path
+import os
+import json
+
+def load_img(path,bounds):
+    bounds = np.array(bounds.split(' ')).astype(int)
+    with h5py.File(path,'r') as f:
+        img = np.zeros((bounds[1]-bounds[0],bounds[3]-bounds[2]))
+        f['Image'].read_direct(img,(slice(bounds[0],bounds[1]),slice(bounds[2],bounds[3])))
+    return img
+
+
+def create_mask(viewer):
+    top_layer = viewer.layers[-1]
+    if type(top_layer).__name__ == "Shapes":
+        mask = top_layer.to_labels(labels_shape=viewer.layers[0].data.shape[0:2])
+
+        skelleton = skeletonize(mask)
+        viewer.add_image(
+            skelleton, colormap="green", blending="translucent", opacity=0.5
+        )
+        for i in viewer.layers:
+            if i.name == "Shapes":
+                viewer.layers.remove(i)
+
+def export_mask_points(viewer,bounds):
+    mask_points, start_point, end_point = sort_mask_points(viewer.layers[-1].data)
+    res_path = Path(os.getcwd()) / 'programme/viewer_napari/results/preused_masks/mask_0.json'
+    num = 0
+    while os.path.exists(res_path):
+        res_path = Path(os.getcwd()) / f'programme/viewer_napari/results/preused_masks/mask_{num}.json'
+        num+=1
+    mask_res = {'mask_points':mask_points.tolist(),
+                'start_point':start_point,
+                'end_point':end_point,
+                'bounds':bounds}
+    with open(res_path,'w') as f:
+        json.dump(mask_res,f)
+
+
+
+
+
+
+def sort_mask_points(mask):
+    mask_cords = []
+    for a in range(len(mask)):
+        for b in range(len(mask[0])):
+            if mask[a,b] ==1:
+                mask_cords.append([a,b])
+    dist_mat = distance_matrix(mask_cords,mask_cords)
+    canidates = np.where((dist_mat > 0) & (dist_mat <= np.sqrt(2)), 1, 0)
+    start_points = np.where(canidates.sum(axis=1) == 1)
+    start_point = start_points[0][1]
+    end_point = start_points[0][0]
+
+    mask_sorted = [mask_cords[start_point]]
+
+    running_point = start_point
+    last_point = start_point
+    while running_point != end_point:
+
+        last_point1 = running_point
+        running_point = np.array(np.where(canidates[running_point] == 1))[0]
+
+        running_point = running_point[0 if running_point[0] != last_point else 1]
+        mask_sorted.append(mask_cords[running_point])
+        last_point = last_point1
+    return np.array(mask_sorted).T, mask_cords[start_point], mask_cords[end_point]
+  
+
