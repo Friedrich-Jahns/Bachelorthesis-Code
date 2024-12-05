@@ -73,3 +73,21 @@ def sort_mask_points(mask):
     return np.array(mask_sorted).T, mask_cords[start_point], mask_cords[end_point]
   
 
+def get_angles(mask_points):
+    angles = []
+    last_angle = 0
+    mask_points = np.array(mask_points).T
+    for i in range(len(mask_points)-1):
+        point_in = mask_points[i]
+        point_n = mask_points[i+1]
+
+        vec = point_n-point_in
+        angle = np.arctan2(vec[1],vec[0])
+        angle = (np.degrees(angle)+90) % 180
+        if angle == 0 and last_angle > 90:
+            angle = 180
+        elif angle == 0 and last_angle<=90:
+            angle = 0
+        angles.append(angle)
+        last_angle = angle
+    return angles

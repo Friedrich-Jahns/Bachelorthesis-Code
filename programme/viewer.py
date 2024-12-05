@@ -3,10 +3,8 @@ from PySide6 import QtCore, QtGui, QtWidgets
 import os
 import subprocess
 from pathlib import Path
-#import viewer_napari.layer as layer
 import json
 
-# script_dir = os.getcwd() + "/programms/viewer_napari"
 viewer = os.getcwd() + "/programme/viewer_napari/main.py"
 miniconda_dir = "/home/friedrichjahns/miniconda3/envs/bsc_conda/bin/python"
 
