@@ -5,6 +5,7 @@ import subprocess
 from pathlib import Path
 import json
 
+
 viewer = os.getcwd() + "/programme/viewer_napari/main.py"
 miniconda_dir = "/home/friedrichjahns/miniconda3/envs/bsc_conda/bin/python"
 
@@ -53,9 +54,9 @@ class MyWidget(QtWidgets.QWidget):
         )
         thresh = lambda: self.ui.lineEdit_7.text()
 
-        def start_napari():
+        def start_napari(diff_mask=False):
             cwd = Path(os.getcwd())
-            dat = {'files':items(),'data_path':dat_path(),'result_path':res_path(),'bounds':bounds(),'threshold':thresh()}
+            dat = {'files':items(),'data_path':dat_path(),'result_path':res_path(),'bounds':bounds(),'threshold':thresh(),'diff_mask':diff_mask}
             with open( cwd / 'programme/viewer_napari/layers_info.json','w') as f:
                 json.dump(dat,f)
 
@@ -66,7 +67,7 @@ class MyWidget(QtWidgets.QWidget):
         self.ui.pushButton.clicked.connect(lambda: load_files())
         self.ui.buttonBox.rejected.connect(self.close)
         self.ui.buttonBox.accepted.connect(lambda:start_napari())
-
+        self.ui.pushButton_2.clicked.connect(lambda:start_napari(diff_mask=True))
         
 
 

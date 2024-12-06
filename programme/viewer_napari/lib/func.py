@@ -168,3 +168,91 @@ def load_pre_used_line_mask(viewer,mask_no):
             points = points.astype(int)
             mask_in[points[0],points[1]] = 1
     viewer.add_image(mask_in, blending="additive", colormap="green", name="skelleton")
+
+
+def get_shape(path):
+    with h5py.File(path,'r') as f:
+        return f['Image'].shape
+
+def diff_mask(viewer,paths,threshold):
+    box_size = 256
+    res_path = Path(os.getcwd()) / 'programme/viewer_napari/results/diff_masks'
+    full_path = res_path/f"Threshold_{threshold}-{box_size}-{paths[0].stem}-{paths[1].stem}.txt"
+    if full_path.exists():
+        print('file already exists')
+    else:
+        f = open(full_path,'w')
+        try:
+            if threshold.split('_')[-1] == 'abs':
+                absoulute = True
+                thresh = int(threshold.split('_')[0])
+        except:
+            absoulute = False
+            thresh = int(threshold)
+        print(f'thresh:{threshold}')
+
+        if get_shape(paths[0])==get_shape(paths[1]):
+            shape = get_shape(paths[0])
+        else:
+            print('shapes do no match')
+            exit()
+
+        y_iterations = shape[0] // box_size
+        y_rest = shape[0] % box_size
+        x_iterations = shape[1] // box_size
+        x_rest = shape[1] % box_size\
+        
+        for a in range(y_iterations):
+            for b in range(x_iterations):
+                start = [a*box_size,b*box_size]
+                size = [box_size,box_size]
+                if a >= y_iterations:
+                    size[0] = y_rest
+                if b >= x_iterations:
+                    size[1] = x_rest
+                
+                box_bounds = f'{start[0]} {start[0]+size[0]} {start[1]} {start[1]+size[1]}'
+
+                img1 = load_img(paths[0],box_bounds)
+                img2 = load_img(paths[1],box_bounds)
+                print(f"\r{start} / {shape}", end="")    
+
+                if absoulute:
+                    img1 = np.abs(img1)
+                    img2 = np.abs(img2)
+                threshed = np.abs(img1-img2) > thresh
+                rel_thresed = np.sum(threshed.astype(int)) / np.prod(threshed.shape)
+                f.write(
+                    str(start[0])
+                    + "\t"
+                    + str(start[0] + size[0])
+                    + "\t"
+                    + str(start[1])
+                    + "\t"
+                    + str(start[1] + size[1])
+                    + "\t"
+                    + str(rel_thresed)
+                    + "\n"
+                )
+                del img1,img2
+        f.close()
+    return full_path
+
+def load_diff_mask(viewer,path):
+    with open(path,'r') as f:
+        data = np.loadtxt(f,delimiter='\t')
+    viewer.add_image(plot_rois(data), colormap="PiYG")
+
+
+def plot_rois(roi):
+    arr = np.empty(
+        (int(max(roi.T[1])) // 100, int(max(roi.T[3])) // 100)
+    )
+    for i in range(len(roi)):
+        arr[
+            int(roi[i, 0]) // 100 : int(roi[i, 1]) // 100,
+            int(roi[i, 2]) // 100 : int(roi[i, 3]) // 100,
+        ] = (
+            roi[i, 4] if roi[i, 4] != float(1) else 0
+        )
+    return arr
