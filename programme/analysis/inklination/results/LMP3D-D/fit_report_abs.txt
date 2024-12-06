@@ -2,18 +2,19 @@
     Model(gaussian)
 [[Fit Statistics]]
     # fitting method   = leastsq
-    # function evals   = 8000
+    # function evals   = 109
     # data points      = 90
     # variables        = 3
-    chi-square         = 22894.3670
-    reduced chi-square = 263.153643
-    Akaike info crit   = 504.495285
-    Bayesian info crit = 511.994714
-    R-squared          = -0.04886176
-##  Warning: uncertainties could not be estimated:
+    chi-square         = 8912.94904
+    reduced chi-square = 102.447690
+    Akaike info crit   = 419.590570
+    Bayesian info crit = 427.089999
+    R-squared          = 0.46169546
 [[Variables]]
-    amplitude:  7.3713e+23 (init = 32472)
-    center:    -12418.5990 (init = 2.666667)
-    sigma:      1391.62335 (init = 3)
-    fwhm:       3277.02249 == '2.3548200*sigma'
-    height:     2.1132e+20 == '0.3989423*amplitude/max(1e-15, sigma)'
+    amplitude:  20514.9485 +/- 1358.75265 (6.62%) (init = 9956.141)
+    center:     48.4402483 +/- 0.52910985 (1.09%) (init = 56.68235)
+    sigma:      7.49487120 +/- 0.38993982 (5.20%) (init = 0.8784314)
+    fwhm:       17.6490726 +/- 0.91823810 (5.20%) == '2.3548200*sigma'
+    height:     1091.98417 +/- 91.9678828 (8.42%) == '0.3989423*amplitude/max(1e-15, sigma)'
+[[Correlations]] (unreported correlations are < 0.100)
+    C(center, sigma) = -0.3462

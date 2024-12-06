@@ -45,29 +45,34 @@ for source, num in number.items():
    
     
     counts,x_edges = np.histogram(hist,bins=180)
+    x_centers  = (x_edges[:-1] + x_edges[1:]) / 2
+
     counts = counts + 0.1
 
     lmfit_model = lmfit.models.GaussianModel()
-    params = lmfit_model.guess(counts, x=np.arange(-90,90))
-    result = lmfit_model.fit(counts, params, x=np.arange(-90,90), weights=1 / np.sqrt(counts),nan_policy='propagate')
+    params = lmfit_model.guess(counts, x=x_centers)
+    result = lmfit_model.fit(counts, params, x=x_centers, weights=1 / np.sqrt(counts),nan_policy='propagate')
     
-    plt.plot(np.arange(-90,90), result.best_fit, color="red",label=f'Bester Fit')
-    plt.bar(range(-90,90),counts, color='steelblue',width=1,label=f"Daten")
+    plt.plot(x_centers, result.best_fit, color="red",label=f'Bester Fit')
+    plt.bar(x_centers,counts, color='steelblue',width=1,label=f"Daten")
     func.plot_config()
     plt.savefig(res_path / f"{source}_histogram.png")
     plt.clf()
     with open(res_path/'fit_report.txt','w') as f:
         f.write(result.fit_report())
 
+
     counts,x_edges = np.histogram(np.abs(hist),bins=90)
+    x_centers  = (x_edges[:-1] + x_edges[1:]) / 2
+
     counts = counts + 0.1
 
     lmfit_model = lmfit.models.GaussianModel()
-    params = lmfit_model.guess(counts, x=np.arange(0,90))
-    result = lmfit_model.fit(counts, params, x=np.arange(0,90), weights=1 / np.sqrt(counts),nan_policy='propagate')
+    params = lmfit_model.guess(counts, x=x_centers)
+    result = lmfit_model.fit(counts, params, x=x_centers, weights=1 / np.sqrt(counts),nan_policy='propagate')
     
-    plt.plot(np.arange(0,90), result.best_fit, color="red",label=f'Bester Fit')
-    plt.bar(range(0,90),counts, color='steelblue',width=1,label=f"Daten")
+    plt.plot(x_centers, result.best_fit, color="red",label=f'Bester Fit')
+    plt.bar(x_centers,counts, color='steelblue',width=1,label=f"Daten")
     func.plot_config()
     plt.savefig(res_path / f"{source}_histogram_abs.png")
     plt.clf()
