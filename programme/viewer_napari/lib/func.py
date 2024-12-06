@@ -5,9 +5,19 @@ from scipy.spatial import distance_matrix
 from pathlib import Path
 import os
 import json
+import matplotlib.pyplot as plt
+from scipy.ndimage import gaussian_filter
+from scipy import interpolate
+
 
 def load_img(path,bounds):
-    bounds = np.array(bounds.split(' ')).astype(int)
+    print('bounds')
+    try:
+        bounds = np.array(bounds.split(' ')).astype(float).astype(int)
+    except:
+        print('except')
+    #     bounds = np.array(bounds.split(' '))
+
     with h5py.File(path,'r') as f:
         img = np.zeros((bounds[1]-bounds[0],bounds[3]-bounds[2]))
         f['Image'].read_direct(img,(slice(bounds[0],bounds[1]),slice(bounds[2],bounds[3])))
@@ -91,3 +101,42 @@ def get_angles(mask_points):
         angles.append(angle)
         last_angle = angle
     return angles
+
+
+def remap_180(data):
+    data = np.array(data)
+    dat_new = np.zeros(len(data)//2)
+    if len(data) == 360:
+      
+        dat_new[0:90] = data[90:180]+data[270:360]
+        dat_new[90:180] = data[0:90]+ data[180:270]
+        return dat_new
+    else:
+        raise ValueError("Data not 360")
+
+
+
+def plot_config(plot_font_size=12):
+    plt.legend(fontsize=plot_font_size)
+    plt.grid(color='grey', linestyle='--', linewidth=0.7)
+    plt.ylabel("Häufigkeit",fontsize=plot_font_size)
+    plt.xlabel("Differenz in °",fontsize=plot_font_size)
+    plt.xticks(fontsize=plot_font_size)
+    plt.yticks(fontsize=plot_font_size)
+    plt.gcf().subplots_adjust(left=0.15)
+    plt.gcf().subplots_adjust(bottom=0.15)
+
+
+def min_diff_interp(dat1, dat2):
+    if True:
+        dat2 = gaussian_filter(np.array(dat2), sigma=3)
+        dat2_new = interpolate_dat(np.arange(len(dat2)),dat2,np.arange(-0.5,len(dat2)+0.5))
+        diff = np.array(dat1) - np.array(dat2_new)
+        return diff
+
+
+def interpolate_dat(data_x,data_y,reference):
+    interpolated_dat = interpolate.interp1d(
+            data_x,data_y, kind="cubic", fill_value="extrapolate"
+        )
+    return interpolated_dat(reference)

@@ -13,14 +13,15 @@ paths_dir = {'LAP':Path("/run/media/friedrichjahns/Data/Registrierte_schnitte/PE
          'LMP3D-D':Path("/run/media/friedrichjahns/Data/Registrierte_schnitte/PE-2021-00981-H_00_s0920_PM_Complete_Direction_Registered_Flat_v002.h5"),
          'LMP3D-R':Path("/run/media/friedrichjahns/Data/Registrierte_schnitte/PE-2021-00981-H_00_s0920_PM_Complete_Direction_Registered_Flat_v000.h5")}
 
-mask_path = Path(os.getcwd()) / '/home/friedrichjahns/Bachelorthesis-Code/programme/viewer_napari/results/preused_masks/'
-
+mask_path = Path(os.getcwd()) / 'programme/viewer_napari/results/preused_masks/'
+# /home/friedrichjahns/Bachelorthesis-Code/programme/viewer_napari/results/mask_1.json
 
 #direction
 dat_res = {}
-for redo_nr in range(63,65):#,313):
+for redo_nr in range(63,313):
     with open(mask_path / f'mask_{redo_nr}.json','r') as f:
         dat = json.load(f)
+    
     mask_points = dat['mask_points']
     bounds = np.array(str(dat['bounds']).split(' ')).astype(int)
     padd = 10
@@ -39,6 +40,7 @@ for redo_nr in range(63,65):#,313):
         # plt.plot(mask_points_new.T[1],mask_points_new.T[0])
         # plt.show()
         for cords in mask_points_new:
+            cords = np.array(cords).astype(int)
             lineprofile.append(img[*cords])
         dat_res[str(key)] = [float(x) for x in lineprofile]
         dat_res['mask_nr'] = redo_nr
@@ -55,7 +57,7 @@ paths_inc = {'LAP':Path("/run/media/friedrichjahns/Data/Registrierte_schnitte/PE
          'LMP3D-D':Path("/run/media/friedrichjahns/Data/Registrierte_schnitte/PE-2021-00981-H_00_s0920_PM_Complete_Direction_Registered_Flat_v001.h5"),
          'LMP3D-R':Path("/run/media/friedrichjahns/Data/Registrierte_schnitte/PE-2021-00981-H_00_s0920_PM_Complete_Direction_Registered_Flat_v000.h5")}
 
-mask_path = Path(os.getcwd()) / '/home/friedrichjahns/Bachelorthesis-Code/programme/viewer_napari/results/preused_masks/'
+mask_path = Path(os.getcwd()) / 'programme/viewer_napari/results/preused_masks/'
 
 
 dat_res = {}
@@ -80,6 +82,7 @@ for redo_nr in range(63,65):#,313):
         # plt.plot(mask_points_new.T[1],mask_points_new.T[0])
         # plt.show()
         for cords in mask_points_new:
+            cords = np.array(cords).astype(int)
             lineprofile.append(img[*cords])
         dat_res[str(key)] = [float(x) for x in lineprofile]
         dat_res['mask_nr'] = redo_nr
