@@ -56,9 +56,9 @@ for redo_nr in range(63,313):
 #inclination
 
 paths_inc = {'LAP':Path("/run/media/friedrichjahns/Data/Registrierte_schnitte/PE-2021-00981-H_00_s0920_LAP_Inclination_Registered_Flat_v000.h5"),
-         'LMP1':Path("/run/media/friedrichjahns/Data/Registrierte_schnitte/PE-2021-00981-H_00_s0920_PM_Complete_Direction_Registered_Flat_v002.h5"),
-         'LMP3D-D':Path("/run/media/friedrichjahns/Data/Registrierte_schnitte/PE-2021-00981-H_00_s0920_PM_Complete_Direction_Registered_Flat_v001.h5"),
-         'LMP3D-R':Path("/run/media/friedrichjahns/Data/Registrierte_schnitte/PE-2021-00981-H_00_s0920_PM_Complete_Direction_Registered_Flat_v000.h5")}
+         'LMP1':Path("/run/media/friedrichjahns/Data/Registrierte_schnitte/PE-2021-00981-H_00_s0920_PM_Complete_Inclination_Registered_Flat_v002.h5"),
+         'LMP3D-D':Path("/run/media/friedrichjahns/Data/Registrierte_schnitte/PE-2021-00981-H_00_s0920_PM_Complete_Inclination_Registered_Flat_v001.h5"),
+         'LMP3D-R':Path("/run/media/friedrichjahns/Data/Registrierte_schnitte/PE-2021-00981-H_00_s0920_PM_Complete_Inclination_Registered_Flat_v000.h5")}
 
 mask_path = Path(os.getcwd()) / 'programme/viewer_napari/results/preused_masks/'
 
@@ -79,7 +79,7 @@ for redo_nr in range(63,313):
     
     lineprofile = []
     for key, value in paths_inc.items():
-        print(value.stem)
+        print(value.stem) 
         img = func.load_img(value,bounds_new_str)
         # plt.imshow(img,cmap='gray')
         # plt.plot(mask_points_new.T[1],mask_points_new.T[0])

@@ -2,7 +2,6 @@ import os
 from pathlib import Path
 import json
 import matplotlib.pyplot as plt
-from scipy.ndimage import gaussian_filter
 import lmfit
 import numpy as np
 from scipy import interpolate
@@ -37,11 +36,6 @@ number = {"LMP1": (63-63, 163-63), "LMP3D-D": (163-63, 234-63), "LMP3D-R": (234-
 
 
 
-# for source, num in number.items():
-#     von, bis = num
-#     for i in data[von:bis]:
-#         print(len(i['angle']),len(i[source]))
-#         input()
 for source, num in number.items():
     von, bis = num
     
@@ -58,8 +52,6 @@ for source, num in number.items():
     corr_turn_full = []
 
     for i in data[von:bis]:
-        # print(len(i[source]),len(i['angle']))
-        # input()
         diff = func.min_diff_interp(i[source], i["angle"])
 
         if turn[i['mask_nr']] == "r":
