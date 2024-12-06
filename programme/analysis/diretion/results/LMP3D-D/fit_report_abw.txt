@@ -1,0 +1,20 @@
+[[Model]]
+    Model(gaussian)
+[[Fit Statistics]]
+    # fitting method   = leastsq
+    # function evals   = 85
+    # data points      = 180
+    # variables        = 3
+    chi-square         = 3940.89161
+    reduced chi-square = 22.2649243
+    Akaike info crit   = 561.516976
+    Bayesian info crit = 571.095847
+    R-squared          = 0.91584698
+[[Variables]]
+    amplitude:  28353.3260 +/- 794.537297 (2.80%) (init = 30487.5)
+    center:    -11.3497972 +/- 0.52484748 (4.62%) (init = -14.5)
+    sigma:      18.3068432 +/- 0.45207153 (2.47%) (init = 12.5)
+    fwhm:       43.1093206 +/- 1.06454709 (2.47%) == '2.3548200*sigma'
+    height:     617.875018 +/- 23.0762303 (3.73%) == '0.3989423*amplitude/max(1e-15, sigma)'
+[[Correlations]] (unreported correlations are < 0.100)
+    C(center, sigma) = +0.2109

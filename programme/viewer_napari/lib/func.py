@@ -131,8 +131,11 @@ def min_diff_interp(dat1, dat2):
     if True:
         dat2 = gaussian_filter(np.array(dat2), sigma=3)
         dat2_new = interpolate_dat(np.arange(len(dat2)),dat2,np.arange(-0.5,len(dat2)+0.5))
-        diff = np.array(dat1) - np.array(dat2_new)
-        return diff
+        if len(dat1) == len(dat2_new):
+            diff = np.array(dat1) - np.array(dat2_new)
+            return diff
+        else:
+            print('shapes dont match')
 
 
 def interpolate_dat(data_x,data_y,reference):
@@ -140,3 +143,4 @@ def interpolate_dat(data_x,data_y,reference):
             data_x,data_y, kind="cubic", fill_value="extrapolate"
         )
     return interpolated_dat(reference)
+

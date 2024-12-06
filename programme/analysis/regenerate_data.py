@@ -31,14 +31,16 @@ for redo_nr in range(63,313):
 
     mask_points_padded = np.array(mask_points).T+np.array([padd,padd])
     mask_points_new = mask_points_padded-np.array([min(mask_points[0]),min(mask_points[1])])
-    
-    lineprofile = []
+    # print(len(np.array(mask_points).T),len(mask_points_new))
+    # input()
     for key, value in paths_dir.items():
         print(value.stem)
         img = func.load_img(value,bounds_new_str)
         # plt.imshow(img,cmap='gray')
         # plt.plot(mask_points_new.T[1],mask_points_new.T[0])
         # plt.show()
+        lineprofile = []
+
         for cords in mask_points_new:
             cords = np.array(cords).astype(int)
             lineprofile.append(img[*cords])
@@ -47,6 +49,7 @@ for redo_nr in range(63,313):
         dat_res['mask_points'] = mask_points
         dat_res['bounds'] = dat['bounds']
         dat_res['angle'] = func.get_angles(mask_points)
+    # print(len(func.get_angles(mask_points)),len(dat_res[str(key)]))
     with open( Path(os.getcwd()) / f'programme/analysis/diretion/profiles/Direction_mask_{redo_nr}.json','w') as f:
         json.dump(dat_res,f)
 
@@ -61,7 +64,7 @@ mask_path = Path(os.getcwd()) / 'programme/viewer_napari/results/preused_masks/'
 
 
 dat_res = {}
-for redo_nr in range(63,65):#,313):
+for redo_nr in range(63,313):
     with open(mask_path / f'mask_{redo_nr}.json','r') as f:
         dat = json.load(f)
     mask_points = dat['mask_points']

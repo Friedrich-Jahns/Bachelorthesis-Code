@@ -37,6 +37,11 @@ number = {"LMP1": (63-63, 163-63), "LMP3D-D": (163-63, 234-63), "LMP3D-R": (234-
 
 
 
+# for source, num in number.items():
+#     von, bis = num
+#     for i in data[von:bis]:
+#         print(len(i['angle']),len(i[source]))
+#         input()
 for source, num in number.items():
     von, bis = num
     
@@ -49,9 +54,13 @@ for source, num in number.items():
 
     count = [0,0,0]
     length = [0,0,0]
+    diff_full = []
+    corr_turn_full = []
 
     for i in data[von:bis]:
-        diff = func.min_diff_interp(i[source][0], i["angle"])
+        # print(len(i[source]),len(i['angle']))
+        # input()
+        diff = func.min_diff_interp(i[source], i["angle"])
 
         if turn[i['mask_nr']] == "r":
             length[0]=length[0]+len(diff)
@@ -66,4 +75,47 @@ for source, num in number.items():
     corr_turn_r = 1/(length[0]/np.sum(length))
     corr_turn_l = 1/(length[1]/np.sum(length))
     corr_turn_m = 1/(length[2]/np.sum(length))
-    print(corr_turn_r)
+
+    for i in data[von:bis]:
+        diff = func.min_diff_interp(i[source], i["angle"])
+        diff_full = np.concatenate((diff_full,diff))
+
+        if turn[i['mask_nr']] == "r":
+            corr_turn_mask = np.full(len(diff), corr_turn_r)
+        elif turn[i['mask_nr']] == "l":
+            corr_turn_mask = np.full(len(diff), corr_turn_l)
+        elif turn[i['mask_nr']] == "m":
+            corr_turn_mask = np.full(len(diff), corr_turn_m)
+        corr_turn_full = np.concatenate((corr_turn_full, corr_turn_mask))   
+    
+    counts,x_edges = np.histogram(diff_full,bins=360)
+    counts = counts + 0.1
+    counts_remapped = func.remap_180(counts)
+
+    lmfit_model = lmfit.models.GaussianModel()
+    params = lmfit_model.guess(counts_remapped, x=np.arange(-90,90))
+    result = lmfit_model.fit(counts_remapped, params, x=np.arange(-90,90), weights=1 / np.sqrt(counts_remapped),nan_policy='propagate')
+    
+    plt.plot(np.arange(-90,90), result.best_fit, color="red",label=f'Bester Fit')
+    plt.bar(range(-90,90),counts_remapped, color='steelblue',width=1,label=f"Daten")
+    func.plot_config()
+    plt.savefig(res_path / f"{source}_histogram_abw.png")
+    plt.clf()
+    with open(res_path/'fit_report_abw.txt','w') as f:
+        f.write(result.fit_report())
+
+    counts,x_edges = np.histogram(diff_full,bins=360,weights=corr_turn_full)
+    counts = counts + 0.1
+    counts_remapped = func.remap_180(counts)
+
+    lmfit_model = lmfit.models.GaussianModel()
+    params = lmfit_model.guess(counts_remapped, x=np.arange(-90,90))
+    result = lmfit_model.fit(counts_remapped, params, x=np.arange(-90,90), weights=1 / np.sqrt(counts_remapped),nan_policy='propagate')
+    
+    plt.plot(np.arange(-90,90), result.best_fit, color="red",label=f'Bester Fit')
+    plt.bar(range(-90,90),counts_remapped, color='steelblue',width=1,label=f"Daten")
+    func.plot_config()
+    plt.savefig(res_path / f"{source}_histogram_abw_corr_turn.png")
+    plt.clf()
+    with open(res_path/'fit_report_abw_corr_turn.txt','w') as f:
+        f.write(result.fit_report())
