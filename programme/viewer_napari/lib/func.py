@@ -144,3 +144,27 @@ def interpolate_dat(data_x,data_y,reference):
         )
     return interpolated_dat(reference)
 
+def load_pre_used_line_mask(viewer,mask_no):
+    try:
+        mask_no_list = [int(mask_no)]
+    except:
+        try:
+            mask_no_list = np.array(mask_no.split(",")).astype(int)
+        except:
+            bounds = np.array(mask_no.split(":")).astype(int)
+            mask_no_list = np.arange(*bounds)
+    print(mask_no_list)
+    
+    mask_in = np.zeros((viewer.layers[0].data.shape[0:2]))
+    with open(Path(os.getcwd()) / 'programme/viewer_napari/layers_info.json') as f:
+        bounds_image = json.load(f)['bounds']
+    for mask_nr in mask_no_list:
+        with open(Path(os.getcwd()) / f'programme/viewer_napari/results/preused_masks/mask_{mask_nr}.json') as f:
+            dat = json.load(f)
+        if dat['bounds'] != bounds_image:
+            print(f"Bounds do not match! Mask generatet on bounds {bounds}")
+            return
+        for points in np.array(dat['mask_points']).T:
+            points = points.astype(int)
+            mask_in[points[0],points[1]] = 1
+    viewer.add_image(mask_in, blending="additive", colormap="green", name="skelleton")
