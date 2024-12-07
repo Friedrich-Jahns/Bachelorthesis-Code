@@ -116,11 +116,14 @@ def remap_180(data):
 
 
 
-def plot_config(plot_font_size=12):
+def plot_config(plot_font_size=12,param='direction'):
     plt.legend(fontsize=plot_font_size)
     plt.grid(color='grey', linestyle='--', linewidth=0.7)
     plt.ylabel("Häufigkeit",fontsize=plot_font_size)
-    plt.xlabel("Differenz in °",fontsize=plot_font_size)
+    if param == 'direction':
+        plt.xlabel("Differenz in °",fontsize=plot_font_size)
+    if param == 'inclination':
+        plt.xlabel("Inklination in °",fontsize=plot_font_size)
     plt.xticks(fontsize=plot_font_size)
     plt.yticks(fontsize=plot_font_size)
     plt.gcf().subplots_adjust(left=0.15)

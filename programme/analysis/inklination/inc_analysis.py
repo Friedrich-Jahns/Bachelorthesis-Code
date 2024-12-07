@@ -55,7 +55,7 @@ for source, num in number.items():
     
     plt.plot(x_centers, result.best_fit, color="red",label=f'Bester Fit')
     plt.bar(x_centers,counts, color='steelblue',width=1,label=f"Daten")
-    func.plot_config()
+    func.plot_config(param = 'inclination')
     plt.savefig(res_path / f"{source}_histogram.png")
     plt.clf()
     with open(res_path/'fit_report.txt','w') as f:
@@ -67,13 +67,15 @@ for source, num in number.items():
 
     counts = counts + 0.1
 
+    #counts , x_centers = counts[1:-1],x_centers[1:-1]
+    
     lmfit_model = lmfit.models.GaussianModel()
     params = lmfit_model.guess(counts, x=x_centers)
     result = lmfit_model.fit(counts, params, x=x_centers, weights=1 / np.sqrt(counts),nan_policy='propagate')
     
     plt.plot(x_centers, result.best_fit, color="red",label=f'Bester Fit')
     plt.bar(x_centers,counts, color='steelblue',width=1,label=f"Daten")
-    func.plot_config()
+    func.plot_config(param = 'inclination')
     plt.savefig(res_path / f"{source}_histogram_abs.png")
     plt.clf()
     with open(res_path/'fit_report_abs.txt','w') as f:
