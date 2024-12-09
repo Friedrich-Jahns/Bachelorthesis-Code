@@ -64,9 +64,9 @@ for source, num in number.items():
             length[2]=length[2]+len(diff)
             count[2]=count[2]+1
 
-    corr_turn_r = 1/(length[0]/np.sum(length))
-    corr_turn_l = 1/(length[1]/np.sum(length))
-    corr_turn_m = 1/(length[2]/np.sum(length))
+    corr_turn_r = 0#1/(length[0]/np.sum(length))
+    corr_turn_l = 1#1/(length[1]/np.sum(length))
+    corr_turn_m = 0#1/(length[2]/np.sum(length))
 
     for i in data[von:bis]:
         diff = func.min_diff_interp(i[source], i["angle"])
