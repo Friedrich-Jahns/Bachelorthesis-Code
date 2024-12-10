@@ -119,11 +119,12 @@ def remap_180(data):
 def plot_config(plot_font_size=12,param='direction'):
     plt.legend(fontsize=plot_font_size)
     plt.grid(color='grey', linestyle='--', linewidth=0.7)
-    plt.ylabel("Häufigkeit",fontsize=plot_font_size)
     if param == 'direction':
         plt.xlabel("Differenz in °",fontsize=plot_font_size)
+        plt.ylabel("Häufigkeit",fontsize=plot_font_size)
     if param == 'inclination':
         plt.xlabel("Inklination in °",fontsize=plot_font_size)
+        plt.ylabel("Häufigkeit",fontsize=plot_font_size)
     plt.xticks(fontsize=plot_font_size)
     plt.yticks(fontsize=plot_font_size)
     plt.gcf().subplots_adjust(left=0.15)
@@ -259,3 +260,32 @@ def plot_rois(roi):
             roi[i, 4] if roi[i, 4] != float(1) else 0
         )
     return arr
+
+
+def straight_line_prof(img,mask):
+    img = np.array(img)
+    mask_arr = np.zeros((img.shape))
+    mask_points = np.array(mask).T
+    for i in mask_points:
+        mask_arr[i[0],i[1]] = 1
+    masked_image = mask_arr*img
+    profile1 = np.trim_zeros(masked_image.sum(0))
+    profile2 = np.trim_zeros(masked_image.T.sum(0))
+    return [profile1 if len(profile1)>len(profile2) else profile2]
+
+def example_angled_straight_line():
+    img = np.zeros((100,100))
+    for i in range(img.shape[0]):
+        for j in range(img.shape[1]):
+            img[i,j] = agled_straight_line_func(i,j)
+    return img
+
+def agled_straight_line_func(x,y):
+    if x>5 and y>5 and x<95 and y<95 and np.abs(x-(.6*y))<.5:
+        return 1      
+    else:
+        return 0
+    
+def movingaverage(interval, window_size):
+    window = np.ones(int(window_size))/float(window_size)
+    return np.convolve(interval, window, 'same')
