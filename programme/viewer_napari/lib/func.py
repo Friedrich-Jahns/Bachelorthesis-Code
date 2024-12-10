@@ -271,7 +271,7 @@ def straight_line_prof(img,mask):
     masked_image = mask_arr*img
     profile1 = np.trim_zeros(masked_image.sum(0))
     profile2 = np.trim_zeros(masked_image.T.sum(0))
-    return [profile1 if len(profile1)>len(profile2) else profile2]
+    return profile1,profile2
 
 def example_angled_straight_line():
     img = np.zeros((100,100))
