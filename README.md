@@ -1,5 +1,5 @@
 # Bachelorthesis-Code
-Dieses Repository enthält den Code zur Analyse von Linienprofilen, zur Erstellung von Differenzmasken auf großen Bildern (~60 GB) und zur Auswertung der resultierenden Daten.  
+Dieses Repository enthält den Code zur erstellung und Analyse von Linienprofilen sowie zur Erstellung von Differenzmasken auf großen Bildern (~60 GB) und zur Auswertung der resultierenden Daten.  
 
 ## Beschreibung  
 Der Code wurde entwickelt, um:  
