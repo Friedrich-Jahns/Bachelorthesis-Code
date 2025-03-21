@@ -6,7 +6,7 @@ Der Code wurde entwickelt, um:
 - Linienprofile in hochauflösenden Bildern zu erstellen und zu analysieren  
 - Differenzmasken zu berechnen  
 - Die resultierenden Daten statistisch auszuwerten
-- 
+
 Er basiert auf Python und nutzt folgende Bibliotheken:  
 
 - **Bildverarbeitung**: `napari`, `skimage`  
